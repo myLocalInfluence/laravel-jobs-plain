@@ -1,6 +1,6 @@
 <?php
 
-namespace Myli\PlainSqs\Jobs;
+namespace Myli\PlainJobs\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;

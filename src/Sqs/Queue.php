@@ -1,8 +1,8 @@
 <?php
 
-namespace Myli\PlainSqs\Sqs;
+namespace Myli\PlainJobs\Sqs;
 
-use Myli\PlainSqs\Jobs\DispatcherJob;
+use Myli\PlainJobs\Jobs\DispatcherJob;
 use Illuminate\Queue\SqsQueue;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Queue\Jobs\SqsJob;
