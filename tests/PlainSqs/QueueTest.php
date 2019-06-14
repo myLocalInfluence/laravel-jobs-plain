@@ -1,14 +1,14 @@
 <?php
 
-namespace Myli\PlainSqs\Tests;
+namespace Myli\PlainJobs\Tests;
 
 use \PHPUnit\Framework\TestCase;
-use Myli\PlainSqs\Jobs\DispatcherJob;
-use Myli\PlainSqs\Sqs\Queue;
+use Myli\PlainJobs\Jobs\DispatcherJob;
+use Myli\PlainJobs\Sqs\Queue;
 
 /**
  * Class QueueTest
- * @package Myli\PlainSqs\Tests
+ * @package Myli\PlainJobs\Tests
  */
 class QueueTest extends TestCase
 {
