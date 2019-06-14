@@ -1,11 +1,10 @@
 <?php
 
-namespace Myli\PlainSqs\Sqs;
+namespace Myli\PlainJobs\Sqs;
 
 use Aws\Sqs\SqsClient;
 use Illuminate\Support\Arr;
 use Illuminate\Queue\Connectors\SqsConnector;
-use Illuminate\Queue\Jobs\SqsJob;
 
 class Connector extends SqsConnector
 {
