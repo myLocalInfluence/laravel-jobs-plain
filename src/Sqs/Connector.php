@@ -3,15 +3,15 @@
 namespace Myli\PlainJobs\Sqs;
 
 use Aws\Sqs\SqsClient;
-use Illuminate\Support\Arr;
 use Illuminate\Queue\Connectors\SqsConnector;
+use Illuminate\Support\Arr;
 
 class Connector extends SqsConnector
 {
     /**
      * Establish a queue connection.
      *
-     * @param  array  $config
+     * @param array $config
      * @return \Illuminate\Contracts\Queue\Queue
      */
     public function connect(array $config)
@@ -25,7 +25,7 @@ class Connector extends SqsConnector
         $queue = new Queue(
             new SqsClient($config), $config['queue'], Arr::get($config, 'prefix', '')
         );
-        
+
         return $queue;
     }
 }

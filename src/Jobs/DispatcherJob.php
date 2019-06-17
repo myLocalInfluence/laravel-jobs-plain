@@ -3,9 +3,9 @@
 namespace Myli\PlainJobs\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class DispatcherJob implements ShouldQueue
 {
@@ -23,6 +23,7 @@ class DispatcherJob implements ShouldQueue
 
     /**
      * DispatchedJob constructor.
+     *
      * @param $data
      */
     public function __construct($data)
@@ -35,10 +36,10 @@ class DispatcherJob implements ShouldQueue
      */
     public function getPayload()
     {
-        if (! $this->isPlain()) {
+        if (!$this->isPlain()) {
             return [
-                'job' => app('config')->get('sqs-plain.default-handler'),
-                'data' => $this->data
+                'job'  => app('config')->get('sqs-plain.default-handler'),
+                'data' => $this->data,
             ];
         }
 

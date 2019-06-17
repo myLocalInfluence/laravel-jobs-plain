@@ -2,13 +2,14 @@
 
 namespace Myli\PlainJobs\Integrations;
 
-use Myli\PlainJobs\Sqs\Connector;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\ServiceProvider;
+use Myli\PlainJobs\Sqs\Connector;
 
 /**
  * Class LaravelServiceProvider
+ *
  * @package App\Providers
  */
 class LaravelServiceProvider extends ServiceProvider
@@ -21,7 +22,7 @@ class LaravelServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/laravel-jobs-plain.php' => config_path('laravel-jobs-plain.php')
+            __DIR__ . '/../config/laravel-jobs-plain.php' => config_path('laravel-jobs-plain.php'),
         ]);
 
         Queue::after(function (JobProcessed $event) {
@@ -34,8 +35,8 @@ class LaravelServiceProvider extends ServiceProvider
      */
     public function register()
     {
-         $this->app->booted(function () {
-            $this->app['queue']->extend('laravel-jobs-plain', function () {
+        $this->app->booted(function () {
+            $this->app['queue']->extend('sqs-plain', function () {
                 return new Connector();
             });
         });

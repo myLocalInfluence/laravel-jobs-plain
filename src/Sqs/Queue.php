@@ -2,13 +2,14 @@
 
 namespace Myli\PlainJobs\Sqs;
 
-use Myli\PlainJobs\Jobs\DispatcherJob;
+use Illuminate\Queue\Jobs\SqsJob;
 use Illuminate\Queue\SqsQueue;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Queue\Jobs\SqsJob;
+use Myli\PlainJobs\Jobs\DispatcherJob;
 
 /**
- * Class CustomSqsQueue
+ * Class Queue
+ *
  * @package App\Services
  */
 class Queue extends SqsQueue
@@ -16,9 +17,9 @@ class Queue extends SqsQueue
     /**
      * Create a payload string from the given job and data.
      *
-     * @param  string  $job
-     * @param  mixed   $data
-     * @param  string  $queue
+     * @param string $job
+     * @param mixed  $data
+     * @param string $queue
      * @return string
      */
     protected function createPayload($job, $data = '', $queue = null)
@@ -27,9 +28,7 @@ class Queue extends SqsQueue
             return parent::createPayload($job, $data, $queue);
         }
 
-        $handlerJob = $this->getClass($queue) . '@handle';
-
-        return $job->isPlain() ? json_encode($job->getPayload()) : json_encode(['job' => $handlerJob, 'data' => $job->getPayload()]);
+        return json_encode($job->getPayload());
     }
 
     /**
@@ -38,19 +37,21 @@ class Queue extends SqsQueue
      */
     private function getClass($queue = null)
     {
-        if (!$queue) return Config::get('sqs-plain.default-handler');
+        if (!$queue) {
+            return Config::get('laravel-jobs-plain.sqs-plain.default-handler');
+        }
+        $queue = explode('/', $queue);
+        $queue = end($queue);
 
-        $queue = end(explode('/', $queue));
-
-        return (array_key_exists($queue, Config::get('sqs-plain.handlers')))
-            ? Config::get('sqs-plain.handlers')[$queue]
-            : Config::get('sqs-plain.default-handler');
+        return (array_key_exists($queue, Config::get('laravel-jobs-plain.sqs-plain.handlers')))
+            ? Config::get('laravel-jobs-plain.sqs-plain.handlers')[$queue]
+            : Config::get('laravel-jobs-plain.sqs-plain.default-handler');
     }
 
     /**
      * Pop the next job off of the queue.
      *
-     * @param  string  $queue
+     * @param string $queue
      * @return \Illuminate\Contracts\Queue\Job|null
      */
     public function pop($queue = null)
@@ -58,19 +59,13 @@ class Queue extends SqsQueue
         $queue = $this->getQueue($queue);
 
         $response = $this->sqs->receiveMessage([
-            'QueueUrl' => $queue,
+            'QueueUrl'       => $queue,
             'AttributeNames' => ['ApproximateReceiveCount'],
         ]);
 
-        if (isset($response['Messages']) && count($response['Messages']) > 0) {
-            $queueId = explode('/', $queue);
-            $queueId = array_pop($queueId);
-
-            $class = (array_key_exists($queueId, $this->container['config']->get('sqs-plain.handlers')))
-                ? $this->container['config']->get('sqs-plain.handlers')[$queueId]
-                : $this->container['config']->get('sqs-plain.default-handler');
-
-            $response = $this->modifyPayload($response['Messages'][0], $class);
+        if ($response->get('Messages') !== null && count($response->get('Messages')) > 0) {
+            $class    = $this->getClass($queue);
+            $response = $this->modifyPayload($response->get('Messages')[0], $class);
 
             if (preg_match('/5\.[4-8]\..*/', $this->container->version())) {
                 return new SqsJob($this->container, $this->sqs, $response, $this->connectionName, $queue);
@@ -82,18 +77,20 @@ class Queue extends SqsQueue
 
     /**
      * @param string|array $payload
-     * @param string $class
+     * @param string       $class
      * @return array
      */
     private function modifyPayload($payload, $class)
     {
-        if (! is_array($payload)) $payload = json_decode($payload, true);
+        if (!is_array($payload)) {
+            $payload = json_decode($payload, true);
+        }
 
         $body = json_decode($payload['Body'], true);
 
         $body = [
-            'job' => $class . '@handle',
-            'data' => isset($body['data']) ? $body['data'] : $body
+            'job'  => $class . '@handle',
+            'data' => isset($body['data']) ? $body['data'] : $body,
         ];
 
         $payload['Body'] = json_encode($body);
@@ -103,8 +100,8 @@ class Queue extends SqsQueue
 
     /**
      * @param string $payload
-     * @param null $queue
-     * @param array $options
+     * @param null   $queue
+     * @param array  $options
      * @return mixed|null
      */
     public function pushRaw($payload, $queue = null, array $options = [])
