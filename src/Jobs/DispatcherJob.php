@@ -17,11 +17,6 @@ class DispatcherJob implements ShouldQueue
     protected $data;
 
     /**
-     * @var bool
-     */
-    protected $plain = false;
-
-    /**
      * DispatchedJob constructor.
      *
      * @param $data
@@ -36,32 +31,6 @@ class DispatcherJob implements ShouldQueue
      */
     public function getPayload()
     {
-        if (!$this->isPlain()) {
-            return [
-                'job'  => app('config')->get('sqs-plain.default-handler'),
-                'data' => $this->data,
-            ];
-        }
-
         return $this->data;
-    }
-
-    /**
-     * @param bool $plain
-     * @return $this
-     */
-    public function setPlain($plain = true)
-    {
-        $this->plain = $plain;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPlain()
-    {
-        return $this->plain;
     }
 }
