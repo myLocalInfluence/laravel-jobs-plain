@@ -29,5 +29,12 @@
     "psr-4": {
       "Myli\\PlainJobs\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Myli\\PlainJobs\\Integrations\\LaravelServiceProvider"
+      ]
+    }
   }
 }

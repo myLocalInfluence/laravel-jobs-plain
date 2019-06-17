@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobProcessed;
 
 /**
- * Class CustomQueueServiceProvider
+ * Class LaravelServiceProvider
  * @package App\Providers
  */
 class LaravelServiceProvider extends ServiceProvider
