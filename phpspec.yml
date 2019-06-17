@@ -1,0 +1,5 @@
+suites:
+  default:
+    namespace: Myli\PlainJobs
+    psr4_prefix: Myli\PlainJobs
+formatter.name: pretty

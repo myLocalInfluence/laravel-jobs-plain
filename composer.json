@@ -24,7 +24,8 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.2.1"
+    "google/cloud-pubsub": "^v1.13",
+    "phpspec/phpspec": "^5.1"
   },
   "autoload": {
     "psr-4": {
