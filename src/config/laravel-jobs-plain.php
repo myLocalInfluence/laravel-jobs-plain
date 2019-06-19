@@ -1,12 +1,20 @@
 <?php
 
 /**
- * List of plain SQS queues and their corresponding handling classes
+ * List of plain connections and their handlers
  */
-return [
-    'handlers' => [
-        'base-integrations-updates' => App\Jobs\HandlerJob::class,
-    ],
 
-    'default-handler' => App\Jobs\HandlerJob::class
+return [
+    'sqs-plain'    => [
+        'handlers'        => [
+            'test-queue-name-sqs' => App\Jobs\HandlerJobSqs::class,
+        ],
+        'default-handler' => App\Jobs\HandlerJobSqs::class,
+    ],
+    'pubsub-plain' => [
+        'handlers'        => [
+            'test-queue-name-pubsub' => App\Jobs\HandlerJobPubsub::class,
+        ],
+        'default-handler' => App\Jobs\HandlerJobPubsub::class,
+    ],
 ];
