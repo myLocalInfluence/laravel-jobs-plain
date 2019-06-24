@@ -5,7 +5,6 @@ namespace Myli\PlainJobs\Integrations;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
-use Myli\PlainJobs\Sqs\Connector;
 
 /**
  * Class LaravelServiceProvider
@@ -37,7 +36,13 @@ class LaravelServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             $this->app['queue']->extend('sqs-plain', function () {
-                return new Connector();
+                return new \Myli\PlainJobs\Sqs\Connector();
+            });
+        });
+        
+        $this->app->booted(function () {
+            $this->app['queue']->extend('pubsub-plain', function () {
+                return new \Myli\PlainJobs\PubSub\Connector();
             });
         });
     }
