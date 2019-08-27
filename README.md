@@ -1,5 +1,7 @@
 # Laravel Jobs Plain
 
+`composer require myli/laravel-jobs-plain`
+
 Remove the laravel dependency on jobs allowing you to process queue jobs with other non-laravel services that push plain json jobs into the queue.
 
 # Config
