@@ -18,13 +18,13 @@
   ],
   "require": {
     "php": ">=7.2",
-    "illuminate/support": "^5.8",
-    "illuminate/queue": "^5.8",
-    "illuminate/bus": "^5.8",
+    "illuminate/support": "5.7.* | 5.8.* | ^6.0 | ^7.0 | ^8.0",
+    "illuminate/queue": "5.7.* | 5.8.* | ^6.0 | ^7.0 | ^8.0",
+    "illuminate/bus": "5.7.* | 5.8.* | ^6.0 | ^7.0 | ^8.0",
+    "google/cloud-pubsub": "^1.1",
     "ext-json": "*"
   },
   "require-dev": {
-    "google/cloud-pubsub": "^v1.13",
     "phpspec/phpspec": "^5.1"
   },
   "autoload": {
