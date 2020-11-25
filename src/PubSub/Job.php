@@ -2,10 +2,11 @@
 
 namespace Myli\PlainJobs\PubSub;
 
-use Illuminate\Queue\Jobs\Job as IlluminateJob;
 use Google\Cloud\PubSub\Message;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\Job as JobContract;
+use Illuminate\Queue\Jobs\Job as IlluminateJob;
+use Ramsey\Uuid\Uuid;
 
 class Job extends IlluminateJob implements JobContract
 {
@@ -72,12 +73,13 @@ class Job extends IlluminateJob implements JobContract
     public function getRawBody()
     {
         $fullData = [
-            'data' => json_decode(base64_decode($this->job->data()), true),
-            'attributes' => $this->job->attributes()
+            'data'       => json_decode(base64_decode($this->job->data()), true) ?? [],
+            'attributes' => $this->job->attributes() ?? []
         ];
         $newArray = [
             'job'  => $this->classHandler . '@handle',
             'data' => $fullData,
+            'uuid' => Uuid::uuid4()
         ];
 
         return json_encode($newArray);
@@ -108,7 +110,8 @@ class Job extends IlluminateJob implements JobContract
     /**
      * Release the job back into the queue.
      *
-     * @param  int $delay
+     * @param int $delay
+     *
      * @return void
      */
     public function release($delay = 0)
