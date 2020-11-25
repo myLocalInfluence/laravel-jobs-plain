@@ -71,10 +71,13 @@ class Job extends IlluminateJob implements JobContract
      */
     public function getRawBody()
     {
-        $data     = json_decode(base64_decode($this->job->data()), true);
+        $fullData = [
+            'data' => json_decode(base64_decode($this->job->data()), true),
+            'attributes' => $this->job->attributes()
+        ];
         $newArray = [
             'job'  => $this->classHandler . '@handle',
-            'data' => $data,
+            'data' => $fullData,
         ];
 
         return json_encode($newArray);
