@@ -72,8 +72,15 @@ class Job extends IlluminateJob implements JobContract
      */
     public function getRawBody()
     {
+        $data = $this->job->data();
+        if (!empty($data) && $this->isBase64Encoded($data)) {
+            $data = base64_decode($data);
+        }
+        if (!empty($data) && $this->isJson($data)) {
+            $data = json_decode($data, true);
+        }
         $fullData = [
-            'data'       => json_decode(base64_decode($this->job->data()), true) ?? [],
+            'data'       => $data ?? [],
             'attributes' => $this->job->attributes() ?? []
         ];
         $newArray = [
@@ -83,6 +90,22 @@ class Job extends IlluminateJob implements JobContract
         ];
 
         return json_encode($newArray);
+    }
+
+    public function isJson(string $string) : bool
+    {
+        json_decode($string);
+
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public function isBase64Encoded(string $data) : bool
+    {
+        if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
